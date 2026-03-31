@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blockchain Land Registry | Enterprise DApp</title>
+<style>
+  /* ----- ENTERPRISE DESIGN SYSTEM · LIGHT PINK + MEDIUM SAGE GREEN ----- */
+  :root {
+    /* Medium Sage Green - Fresh & Professional */
+    --sage-50: #f5f8f2;
+    --sage-100: #eaf1e3;
+    --sage-200: #d5e3c7;
+    --sage-300: #bcd5a3;
+    --sage-400: #9fc77f;
+    --sage-500: #7fb35c;
+    --sage-600: #5f8b42;
+    --sage-700: #4a6b34;
+    
+    /* Light Pink - Soft & Sophisticated */
+    --pink-50: #fff5f7;
+    --pink-100: #ffe8ed;
+    --pink-200: #ffd1da;
+    --pink-300: #ffb3c2;
+    --pink-400: #ff8aa0;
+    --pink-500: #f47282;
+    --pink-600: #e0556a;
+    --pink-700: #c73e54;
+    
+    /* Core Variables */
+    --bg-primary: var(--sage-50);
+    --bg-secondary: #ffffff;
+    --bg-tertiary: var(--sage-100);
+    --bg-card: #ffffff;
+    --border-light: var(--sage-200);
+    --border-medium: var(--sage-300);
+    
+    /* Accent colors */
+    --accent-primary: var(--pink-500);
+    --accent-primary-dark: var(--pink-600);
+    --accent-secondary: var(--sage-500);
+    --accent-success: var(--sage-600);
+    --accent-warning: #e6a017;
+    --accent-danger: #e0556a;
+    --accent-info: var(--pink-400);
+    
+    /* Text colors */
+    --text-primary: #2c3e2f;
+    --text-secondary: #5a6e52;
+    --text-muted: #7e8f74;
+    
+    /* Shadows - Enhanced for depth */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.02);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+    --shadow-xl: 0 20px 32px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.04);
+    --shadow-glow: 0 0 0 3px rgba(244, 114, 130, 0.12);
+    --shadow-glow-green: 0 0 0 3px rgba(95, 139, 66, 0.12);
+    
+    /* Animations */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Font */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'SF Pro Text', sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    
+    /* Border radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Header - Glassmorphism Effect */
+  header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sage-200);
+    padding: 0 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--pink-500), var(--pink-400));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .logo h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+  
+  .logo p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+  
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    background: var(--sage-100);
+    border: 1px solid var(--sage-200);
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sage-600);
+    transition: var(--transition-fast);
+  }
+  
+  .status-badge:hover {
+    border-color: var(--sage-300);
+    background: var(--sage-50);
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sage-600);
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 0 2px rgba(95, 139, 66, 0.2);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  
+  /* Navigation - Tabs */
+  nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 40px;
+    display: flex;
+    gap: 4px;
+    box-shadow: var(--shadow-xs);
+  }
+  
+  .tab {
+    padding: 16px 28px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+  
+  .tab:hover {
+    color: var(--pink-600);
+    background: var(--sage-50);
+  }
+  
+  .tab.active {
+    color: var(--pink-600);
+    background: var(--bg-primary);
+  }
+  
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--pink-500);
+    border-radius: 2px;
+  }
+  
+  /* Main container */
+  main {
+    padding: 32px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  
+  /* Page visibility */
+  .page {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .page.active {
+    display: block;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Grids - Enhanced */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+  
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  
+  /* Cards - Enhanced Enterprise Design */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink-500), var(--sage-500));
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--pink-200);
+    transform: translateY(-3px);
+  }
+  
+  .card:hover::before {
+    opacity: 1;
+  }
+  
+  .card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--pink-500);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Stat Cards - Enhanced */
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(244, 114, 130, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--pink-300);
+  }
+  
+  .stat-card .label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .stat-card .value {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--pink-600);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  
+  .stat-card .sub {
+    font-size: 12px;
+    color: var(--sage-600);
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  
+  /* Forms - Enhanced */
+  .form-row {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: var(--font-sans);
+    transition: all var(--transition-fast);
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--pink-400);
+    box-shadow: var(--shadow-glow);
+  }
+  
+  input::placeholder, select::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+  
+  /* Buttons - Enhanced */
+  .btn {
+    padding: 12px 28px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.3px;
+  }
+  
+  .btn-primary {
+    background: var(--pink-500);
+    color: white;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-primary:hover {
+    background: var(--pink-600);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(244, 114, 130, 0.25);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  .btn-success {
+    background: var(--sage-500);
+    color: white;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-success:hover {
+    background: var(--sage-600);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(95, 139, 66, 0.25);
+  }
+  
+  .btn-sm {
+    padding: 8px 20px;
+    font-size: 12px;
+  }
+  
+  /* Tables - Enhanced */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    text-align: left;
+    padding: 14px 12px;
+    color: var(--pink-600);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid var(--border-light);
+    background: var(--sage-50);
+  }
+  
+  td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  tr:hover td {
+    background: var(--sage-50);
+  }
+  
+  /* Badges - Enhanced */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 6px;
+  }
+  
+  .badge-green {
+    background: var(--sage-100);
+    color: var(--sage-600);
+    border: 1px solid var(--sage-200);
+  }
+  
+  .badge-blue {
+    background: var(--pink-50);
+    color: var(--pink-600);
+    border: 1px solid var(--pink-200);
+  }
+  
+  .badge-orange {
+    background: #fff7e6;
+    color: var(--accent-warning);
+    border: 1px solid #ffe4b3;
+  }
+  
+  .badge-purple {
+    background: var(--sage-50);
+    color: var(--sage-600);
+    border: 1px solid var(--sage-200);
+  }
+  
+  /* Address */
+  .address {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  
+  /* Alerts - Enhanced */
+  .alert {
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .alert-success {
+    background: var(--sage-100);
+    border: 1px solid var(--sage-200);
+    color: var(--sage-600);
+  }
+  
+  .alert-error {
+    background: var(--pink-50);
+    border: 1px solid var(--pink-200);
+    color: var(--pink-600);
+  }
+  
+  .alert-info {
+    background: var(--sage-50);
+    border: 1px solid var(--sage-200);
+    color: var(--sage-600);
+  }
+  
+  /* Node Grid - Enhanced */
+  .node-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  
+  .node-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    text-align: center;
+    transition: all var(--transition-normal);
+    position: relative;
+  }
+  
+  .node-card:hover {
+    border-color: var(--pink-400);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+  
+  .node-card.authority {
+    border-color: var(--pink-300);
+    background: linear-gradient(135deg, #ffffff, var(--pink-50));
+  }
+  
+  .node-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  
+  .node-label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  
+  .node-addr {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    word-break: break-all;
+    background: var(--sage-50);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+  }
+  
+  .node-bal {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--sage-600);
+    margin-top: 12px;
+  }
+  
+  /* Blockchain Chain Visualization - Enhanced */
+  .chain {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    padding: 16px 0;
+    gap: 0;
+    scrollbar-width: thin;
+  }
+  
+  .block {
+    min-width: 135px;
+    background: var(--sage-50);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+  
+  .block:hover {
+    border-color: var(--pink-400);
+    transform: scale(1.02);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .block.latest {
+    border-color: var(--pink-500);
+    background: var(--pink-50);
+  }
+  
+  .block-num {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .block-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--pink-600);
+    margin: 4px 0;
+  }
+  
+  .block-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  
+  .chain-link {
+    width: 40px;
+    height: 2px;
+    background: var(--border-light);
+    flex-shrink: 0;
+    position: relative;
+    margin: 0 8px;
+  }
+  
+  .chain-link::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: -10px;
+    color: var(--pink-400);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  /* Section Title - Enhanced */
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: var(--text-primary);
+    border-left: 4px solid var(--pink-500);
+    padding-left: 20px;
+    letter-spacing: -0.3px;
+  }
+  
+  /* Info Panel */
+  .info-panel {
+    background: var(--sage-50);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Utility Classes */
+  .hidden {
+    display: none;
+  }
+  
+  .loading {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 48px;
+    font-weight: 500;
+  }
+  
+  .mt-20 { margin-top: 20px; }
+  .mt-24 { margin-top: 24px; }
+  .mb-20 { margin-bottom: 20px; }
+  .mb-24 { margin-bottom: 24px; }
+  .gap { gap: 28px; }
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--sage-100);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--pink-300);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--pink-500);
+  }
+  
+  /* Selection */
+  ::selection {
+    background: var(--pink-200);
+    color: var(--text-primary);
+  }
+  
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  
+  @media (max-width: 1024px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    main { padding: 24px; }
+    nav { padding: 0 24px; overflow-x: auto; }
+    .tab { padding: 14px 20px; white-space: nowrap; }
+    header { padding: 0 24px; }
+  }
+  
+  @media (max-width: 768px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    header { padding: 16px 20px; flex-direction: column; height: auto; gap: 12px; }
+    .logo h1 { font-size: 18px; }
+    main { padding: 20px; }
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: 20px 0;
+  }
+  
+  /* Link styles */
+  a {
+    color: var(--pink-600);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  a:hover {
+    color: var(--pink-700);
+  }
+  
+  /* Transaction result card */
+  .tx-result-card {
+    background: var(--sage-50);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏛️</div>
+    <div>
+      <h1>Blockchain Land Registry</h1>
+      <p>Enterprise Ethereum DApp · Immutable Smart Contract</p>
+    </div>
+  </div>
+  <div class="status-badge">
+    <div class="dot"></div>
+    <span id="netStatus">Connecting to Ganache...</span>
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+  <button class="tab" onclick="showTab('nodes')">🖧 Network Nodes</button>
+  <button class="tab" onclick="showTab('register')">📝 Register Land</button>
+  <button class="tab" onclick="showTab('transfer')">🔄 Transfer</button>
+  <button class="tab" onclick="showTab('explore')">🔍 Explore</button>
+  <button class="tab" onclick="showTab('blockchain')">⛓️ Blockchain</button>
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="grid-4 mb-24">
+    <div class="stat-card"><div class="label"><span>🖧</span> Total Nodes</div><div class="value" id="statNodes">—</div><div class="sub">Ganache Accounts</div></div>
+    <div class="stat-card"><div class="label"><span>⛓️</span> Latest Block</div><div class="value" id="statBlock">—</div><div class="sub">Mined on Ganache</div></div>
+    <div class="stat-card"><div class="label"><span>🏡</span> Lands Registered</div><div class="value" id="statLands">—</div><div class="sub">On-chain Records</div></div>
+    <div class="stat-card"><div class="label"><span>📜</span> Contract Address</div><div class="value" style="font-size:16px;font-family:monospace;letter-spacing:-0.5px" id="statContract">—</div><div class="sub">Smart Contract</div></div>
+  </div>
+  <div class="grid-2 gap">
+    <div class="card">
+      <div class="card-title"><span>⛓️</span> Blockchain Ledger Preview</div>
+      <div id="chainViz" class="chain">
+        <div class="loading">Loading blocks...</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🏡</span> Registered Land Assets</div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%;">
+          <thead> <tr><th>ID</th><th>Location</th><th>Area</th><th>Owner</th></tr> </thead>
+          <tbody id="landsTable"> <tr><td colspan="4" class="loading">Loading...</td></tr> </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NODES -->
+<div id="page-nodes" class="page">
+  <div class="section-title">🖧 Network Participants & Validators</div>
+  <div id="alertNodes"></div>
+  <div class="node-grid" id="nodesGrid">
+    <div class="loading">Loading nodes...</div>
+  </div>
+  <div class="card mt-24">
+    <div class="card-title"><span>📋</span> Detailed Node Registry</div>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%;">
+        <thead> <tr><th>#</th><th>Label</th><th>Address</th><th>Balance (ETH)</th><th>Role</th></tr> </thead>
+        <tbody id="nodesTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER LAND -->
+<div id="page-register" class="page">
+  <div class="grid-2 gap">
+    <div class="card">
+      <div class="card-title"><span>📝</span> Register New Land Asset</div>
+      <div id="alertRegister"></div>
+      <div class="form-row"><label>Land ID (unique identifier)</label><input type="number" id="regLandId" placeholder="e.g. 1001" /></div>
+      <div class="form-row"><label>Location / Address</label><input type="text" id="regLocation" placeholder="e.g. 45 MG Road, Bengaluru" /></div>
+      <div class="form-row"><label>Area (sq ft / acres)</label><input type="text" id="regArea" placeholder="e.g. 2400 sq ft" /></div>
+      <div class="form-row"><label>Assign Owner (Node)</label><select id="regOwner"><option value="">Loading accounts...</option></select></div>
+      <div class="form-row"><label>Document Hash (SHA-256 fingerprint)</label><input type="text" id="regDocHash" placeholder="e.g. 0xabc123..." /><small style="color:var(--text-muted);font-size:11px;margin-top:6px;display:block">🔒 Cryptographic proof of document authenticity</small></div>
+      <button class="btn btn-primary" onclick="registerLand()">🚀 Register on Blockchain</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>ℹ️</span> Governance & Immutability</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8">
+        <p>1. Only the <strong style="color:var(--pink-600)">Government Authority</strong> (Account 0) can execute registrations.</p><br>
+        <p>2. All records are permanently anchored to the Ethereum blockchain via smart contract.</p><br>
+        <p>3. Each registration triggers a consensus-verified transaction mined on Ganache.</p><br>
+        <p>4. Document hash ensures cryptographic proof of land title integrity.</p><br>
+        <p>5. Ownership lineage is immutably recorded from genesis.</p>
+      </div>
+      <div class="info-panel">
+        <div class="card-title" style="font-size:11px;margin-bottom:12px">📜 Last Registration Event</div>
+        <div id="lastRegTx" style="font-size:12px;color:var(--text-muted)">No registration yet</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSFER -->
+<div id="page-transfer" class="page">
+  <div class="grid-2 gap">
+    <div class="card">
+      <div class="card-title"><span>🔄</span> Transfer Land Ownership</div>
+      <div id="alertTransfer"></div>
+      <div class="form-row"><label>Land ID</label><input type="number" id="txLandId" placeholder="Enter Land ID" /></div>
+      <div class="form-row"><label>Current Owner (From Node)</label><select id="txFrom"><option value="">Select current owner...</option></select></div>
+      <div class="form-row"><label>New Owner (To Node)</label><select id="txTo"><option value="">Select new owner...</option></select></div>
+      <button class="btn btn-success" onclick="transferLand()">🔄 Execute Transfer</button>
+      <div id="txResult" class="mt-20"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>⚡</span> Transaction Lifecycle</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8">
+        <p>1. Current owner initiates transfer via their wallet.</p><br>
+        <p>2. Smart contract validates ownership and executes atomic state change.</p><br>
+        <p>3. Transfer transaction is broadcast and mined in the next block.</p><br>
+        <p>4. Ganache achieves consensus, updating the global ledger.</p><br>
+        <p>5. Ownership history reflects immutable audit trail.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLORE -->
+<div id="page-explore" class="page">
+  <div class="card mb-24">
+    <div class="card-title"><span>🔍</span> Land Record Explorer</div>
+    <div style="display:flex;gap:14px;align-items:flex-end">
+      <div style="flex:1"><label>Enter Land ID</label><input type="number" id="exploreId" placeholder="e.g. 1001" /></div>
+      <button class="btn btn-primary" onclick="exploreLand()">🔍 Search</button>
+    </div>
+  </div>
+  <div id="exploreResult" class="hidden">
+    <div class="grid-2 gap mb-24">
+      <div class="card"><div class="card-title"><span>🏡</span> Asset Details</div><table><tbody id="landDetailTable"></tbody></table></div>
+      <div class="card"><div class="card-title"><span>👥</span> Ownership Chain</div><div id="ownershipHistory"></div></div>
+    </div>
+    <div class="card"><div class="card-title"><span>📜</span> Transaction Audit Log</div><div style="overflow-x: auto;"><table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Timestamp</th></tr></thead><tbody id="txHistory"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- BLOCKCHAIN -->
+<div id="page-blockchain" class="page">
+  <div class="section-title">⛓️ Distributed Ledger Explorer</div>
+  <div class="card mb-24">
+    <div class="card-title"><span>📦</span> Block DAG Visualization</div>
+    <div id="blockChain" class="chain"><div class="loading">Loading...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📋</span> Block Details & Consensus</div>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%;">
+        <thead><tr><th>Block #</th><th>Hash</th><th>Transactions</th><th>Timestamp</th></tr></thead>
+        <tbody id="blocksTable"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:20px">
+    <button class="btn btn-primary btn-sm" onclick="loadBlockchain()">🔄 Refresh Explorer</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+const API = 'http://localhost:3001/api';
+let accounts = [];
+let contractAddress = '';
+
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'nodes') loadNodes();
+  if (name === 'blockchain') loadBlockchain();
+}
+
+function short(addr) {
+  return addr ? addr.slice(0,8) + '...' + addr.slice(-6) : 'N/A';
+}
+
+function showAlert(elId, msg, type='info') {
+  document.getElementById(elId).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+async function loadInfo() {
+  try {
+    const res = await fetch(API + '/info');
+    const data = await res.json();
+    accounts = data.accounts;
+    contractAddress = data.contractAddress;
+    document.getElementById('netStatus').textContent = `Ganache Active · Block #${data.blockNumber}`;
+    document.getElementById('statNodes').textContent = data.totalAccounts;
+    document.getElementById('statBlock').textContent = '#' + data.blockNumber;
+    document.getElementById('statContract').textContent = short(data.contractAddress);
+    const opts = accounts.map((a,i) => `<option value="${i}">[${i}] ${a.label} — ${a.shortAddress}</option>`).join('');
+    document.getElementById('regOwner').innerHTML = opts;
+    document.getElementById('txFrom').innerHTML = '<option value="">Select...</option>' + opts;
+    document.getElementById('txTo').innerHTML = '<option value="">Select...</option>' + opts;
+  } catch(e) {
+    document.getElementById('netStatus').textContent = '❌ Connection Error';
+  }
+}
+
+async function loadDashboard() {
+  await loadInfo();
+  try {
+    const res = await fetch(API + '/lands');
+    const data = await res.json();
+    document.getElementById('statLands').textContent = data.lands.length;
+    const tbody = document.getElementById('landsTable');
+    if (data.lands.length === 0) {
+      tbody.innerHTML = '```<td colspan="4" style="text-align:center;color:var(--text-muted)">No registered assets</td>```';
+    } else {
+      tbody.innerHTML = data.lands.map(l => `
+        <tr>
+          <td><span class="badge badge-blue">#${l.landId}</span></td>
+          <td>${l.location}</td>
+          <td>${l.area}</td>
+          <td class="address">${l.currentOwner}</td>
+         `).join('');
+    }
+  } catch(e) {}
+  try {
+    const res = await fetch(API + '/blocks');
+    const data = await res.json();
+    const chain = document.getElementById('chainViz');
+    chain.innerHTML = [...data.blocks].reverse().map((b, i) => `
+      ${i > 0 ? '<div class="chain-link"></div>' : ''}
+      <div class="block ${i === data.blocks.length-1 ? 'latest' : ''}">
+        <div class="block-num">Block</div>
+        <div class="block-val">#${b.number}</div>
+        <div class="block-sub">${b.txCount} txns</div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+async function loadNodes() {
+  try {
+    const res = await fetch(API + '/info');
+    const data = await res.json();
+    accounts = data.accounts;
+    const icons = ['🏛️','👨‍🌾','👩‍🌾','🏢','🏠','👤','👤','👤','👤','👤'];
+    document.getElementById('nodesGrid').innerHTML = accounts.map((a,i) => `
+      <div class="node-card ${a.isAuthority ? 'authority' : ''}">
+        <div class="node-icon">${icons[i] || '👤'}</div>
+        <div class="node-label">${a.label}</div>
+        <div class="node-addr">${a.address}</div>
+        <div class="node-bal">Ξ ${a.balance}</div>
+        ${a.isAuthority ? '<div class="badge badge-orange" style="margin-top:8px;font-size:9px">AUTHORITY</div>' : ''}
+      </div>`).join('');
+    document.getElementById('nodesTable').innerHTML = accounts.map(a => `
+      迭代
+        <td>${a.index}</td>
+        <td>${a.label}</td>
+        <td class="address">${a.address}</td>
+        <td>Ξ ${a.balance}</td>
+        <td>${a.isAuthority ? '<span class="badge badge-orange">Government Authority</span>' : '<span class="badge badge-blue">Landowner / Node</span>'}</td>
+       `).join('');
+  } catch(e) {
+    showAlert('alertNodes', 'Unable to fetch node data', 'error');
+  }
+}
+
+async function registerLand() {
+  const landId = document.getElementById('regLandId').value;
+  const location = document.getElementById('regLocation').value;
+  const area = document.getElementById('regArea').value;
+  const ownerIndex = document.getElementById('regOwner').value;
+  const documentHash = document.getElementById('regDocHash').value;
+  if (!landId || !location || !area || ownerIndex === '' || !documentHash) {
+    return showAlert('alertRegister', '⚠️ All fields required', 'error');
+  }
+  showAlert('alertRegister', '⏳ Submitting transaction to blockchain...', 'info');
+  try {
+    const res = await fetch(API + '/register', { 
+      method: 'POST', 
+      headers: {'Content-Type':'application/json'}, 
+      body: JSON.stringify({ landId: parseInt(landId), location, area, ownerIndex: parseInt(ownerIndex), documentHash }) 
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert('alertRegister', `✅ Land #${data.landId} registered! TX: ${data.txHash.slice(0,20)}...`, 'success');
+      document.getElementById('lastRegTx').innerHTML = `
+        <b>Land ID:</b> #${data.landId}<br>
+        <b>Block:</b> #${data.blockNumber}<br>
+        <b>TX Hash:</b> <span class="address">${data.txHash}</span><br>
+        <b>Owner:</b> <span class="address">${data.owner}</span>`;
+    } else {
+      showAlert('alertRegister', '❌ ' + data.error, 'error');
+    }
+  } catch(e) {
+    showAlert('alertRegister', '❌ Server error', 'error');
+  }
+}
+
+async function transferLand() {
+  const landId = document.getElementById('txLandId').value;
+  const fromIndex = document.getElementById('txFrom').value;
+  const toIndex = document.getElementById('txTo').value;
+  if (!landId || fromIndex === '' || toIndex === '') {
+    return showAlert('alertTransfer', '⚠️ All fields required', 'error');
+  }
+  if (fromIndex === toIndex) {
+    return showAlert('alertTransfer', '⚠️ Cannot transfer to same account', 'error');
+  }
+  showAlert('alertTransfer', '⏳ Processing transfer...', 'info');
+  try {
+    const res = await fetch(API + '/transfer', { 
+      method: 'POST', 
+      headers: {'Content-Type':'application/json'}, 
+      body: JSON.stringify({ landId: parseInt(landId), fromIndex: parseInt(fromIndex), toIndex: parseInt(toIndex) }) 
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert('alertTransfer', `✅ Land #${data.landId} transferred! Block #${data.blockNumber}`, 'success');
+      document.getElementById('txResult').innerHTML = `
+        <div class="info-panel">
+          <div class="card-title" style="color:var(--sage-600);margin-bottom:12px">✅ Transfer Confirmed</div>
+          <table style="width:100%">
+            <tr><td style="color:var(--text-muted);padding:6px 0">TX Hash</td><td class="address">${data.txHash}</td></tr>
+            <tr><td style="color:var(--text-muted);padding:6px 0">Block</td><td>#${data.blockNumber}</td></tr>
+            <tr><td style="color:var(--text-muted);padding:6px 0">From</td><td class="address">${data.from}</td></tr>
+            <tr><td style="color:var(--text-muted);padding:6px 0">To</td><td class="address">${data.to}</td></tr>
+          </table>
+        </div>`;
+    } else {
+      showAlert('alertTransfer', '❌ ' + data.error, 'error');
+    }
+  } catch(e) {
+    showAlert('alertTransfer', '❌ Transfer failed', 'error');
+  }
+}
+
+async function exploreLand() {
+  const id = document.getElementById('exploreId').value;
+  if (!id) return;
+  try {
+    const res = await fetch(API + '/land/' + id);
+    const data = await res.json();
+    if (data.error) {
+      document.getElementById('exploreResult').classList.add('hidden');
+      alert('Land not found');
+      return;
+    }
+    document.getElementById('exploreResult').classList.remove('hidden');
+    document.getElementById('landDetailTable').innerHTML = `
+      <tr><td style="color:var(--text-muted);padding:8px">Land ID</td><td><span class="badge badge-blue">#${data.landId}</span></td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Location</td><td>${data.location}</td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Area</td><td>${data.area}</td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Current Owner</td><td class="address">${data.currentOwner}</td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Document Hash</td><td class="address">${data.documentHash}</td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Registered</td><td>${data.registeredAt}</td></tr>`;
+    document.getElementById('ownershipHistory').innerHTML = data.ownershipHistory.map((addr,i) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light)">
+        <span class="badge ${i===0?'badge-orange':'badge-blue'}">${i===0?'Original Owner':'Owner '+(i)}</span>
+        <span class="address">${addr}</span>
+      </div>`).join('');
+    document.getElementById('txHistory').innerHTML = data.transactions.map(tx => `
+      <tr>
+        <td><span class="badge ${tx.type==='REGISTER'?'badge-orange':'badge-green'}">${tx.type}</span></td>
+        <td class="address">${short(tx.from)}</td>
+        <td class="address">${short(tx.to)}</td>
+        <td style="color:var(--text-muted)">${tx.timestamp}</td>
+      </tr>`).join('');
+  } catch(e) {
+    alert('Error fetching land');
+  }
+}
+
+async function loadBlockchain() {
+  try {
+    const res = await fetch(API + '/blocks');
+    const data = await res.json();
+    const blocks = data.blocks;
+    document.getElementById('blockChain').innerHTML = [...blocks].reverse().map((b, i) => `
+      ${i > 0 ? '<div class="chain-link"></div>' : ''}
+      <div class="block ${i===blocks.length-1?'latest':''}">
+        <div class="block-num">Block</div>
+        <div class="block-val">#${b.number}</div>
+        <div class="block-sub">${b.txCount} txns</div>
+        <div class="block-sub" style="font-size:9px">${b.hash.slice(0,10)}...</div>
+      </div>`).join('');
+    document.getElementById('blocksTable').innerHTML = blocks.map(b => `
+      <tr>
+        <td><span class="badge badge-blue">#${b.number}</span></td>
+        <td class="address">${b.hash}</td>
+        <td><span class="badge ${b.txCount>0?'badge-green':'badge-blue'}">${b.txCount} txns</span></td>
+        <td style="color:var(--text-muted)">${b.timestamp}</td>
+      </tr>`).join('');
+  } catch(e) {
+    document.getElementById('blocksTable').innerHTML = '<tr><td colspan="4" style="color:var(--accent-danger)">Error loading blocks</td></tr>';
+  }
+}
+
+loadDashboard();
+setInterval(loadDashboard, 15000);
+</script>
+</body>
+</html>

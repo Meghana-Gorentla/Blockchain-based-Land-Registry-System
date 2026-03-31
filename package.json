@@ -1,0 +1,16 @@
+{
+  "name": "land-registry-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain-based Land Registry System using Ethereum",
+  "scripts": {
+    "compile": "solc --abi --bin contracts/LandRegistry.sol -o build/",
+    "deploy": "node scripts/deploy.js",
+    "start": "node scripts/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "solc": "^0.8.19",
+    "web3": "^4.3.0"
+  }
+}
