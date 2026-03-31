@@ -175,5 +175,4 @@ Each account = a node on the Ethereum network ✅
 | POST | /api/register | Register new land |
 | POST | /api/transfer | Transfer ownership |
 | GET | /api/blocks | Recent blockchain blocks |
-=======
 
