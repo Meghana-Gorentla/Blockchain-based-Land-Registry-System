@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏛️ Blockchain Land Registry — Ethereum DApp
 
 A complete blockchain-based land registry system built on Ethereum using Solidity smart contracts and Ganache for local development.
@@ -174,3 +175,6 @@ Each account = a node on the Ethereum network ✅
 | POST | /api/register | Register new land |
 | POST | /api/transfer | Transfer ownership |
 | GET | /api/blocks | Recent blockchain blocks |
+=======
+# Blockchain-based-Land-Registry-System
+>>>>>>> bd26746d81719d284e21e8d45bb40c9ff206289a
