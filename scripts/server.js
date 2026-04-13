@@ -31,7 +31,95 @@ function shortAddr(addr) {
   return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "N/A";
 }
 
+function getAccountLabel(index) {
+  if (index === 0) return "Government Authority";
+  return `Landowner ${index}`;
+}
+
+function getAccountRole(index) {
+  return index === 0 ? "AUTHORITY" : "OWNER";
+}
+
+// ─── Reference Data (Pre-populated Land Properties) ─────────────────────────
+const LANDS_REFERENCE = {
+  1001: { location: "45 MG Road, Bengaluru", area: "2400 sq ft" },
+  1002: { location: "123 Brigade Road, Bengaluru", area: "1500 sq ft" },
+  1003: { location: "Lavelle Road, Delhi", area: "3500 sq ft" },
+  1004: { location: "MG Road, Mumbai", area: "1800 sq ft" },
+  1005: { location: "Marine Drive, Mumbai", area: "4000 sq ft" },
+  1006: { location: "Richmond Road, Bangalore", area: "2200 sq ft" },
+  1007: { location: "Bandra, Mumbai", area: "3000 sq ft" },
+  1008: { location: "Koramangala, Bangalore", area: "1600 sq ft" },
+  1009: { location: "Jubilee Hills, Hyderabad", area: "2800 sq ft" },
+  1010: { location: "Indiranagar, Bangalore", area: "2100 sq ft" },
+  1011: { location: "Viharamahadevi Park, Colombo", area: "3200 sq ft" },
+  1012: { location: "Purl Road, Puri", area: "2900 sq ft" },
+  1013: { location: "Mount Road, Chennai", area: "2600 sq ft" },
+  1014: { location: "Connaught Place, New Delhi", area: "3800 sq ft" },
+  1015: { location: "Park Street, Kolkata", area: "2400 sq ft" },
+  1016: { location: "Linking Road, Bandra", area: "3100 sq ft" },
+  1017: { location: "Sarjapur Road, Bangalore", area: "2750 sq ft" },
+  1018: { location: "Whitefield, Bangalore", area: "3400 sq ft" },
+  1019: { location: "Noida City Centre, Delhi NCR", area: "2200 sq ft" },
+  1020: { location: "Sector 9, Chandigarh", area: "2850 sq ft" },
+};
+
+// ─── Email & PIN Credentials ──────────────────────────────────────────────
+const ACCOUNT_CREDENTIALS = {
+  "authority@landregistry.gov": { accountIndex: 0, pin: "0000" },
+  "owner1@email.com": { accountIndex: 1, pin: "1111" },
+  "owner2@email.com": { accountIndex: 2, pin: "2222" },
+  "owner3@email.com": { accountIndex: 3, pin: "3333" },
+  "owner4@email.com": { accountIndex: 4, pin: "4444" },
+  "owner5@email.com": { accountIndex: 5, pin: "5555" },
+  "owner6@email.com": { accountIndex: 6, pin: "6666" },
+  "owner7@email.com": { accountIndex: 7, pin: "7777" },
+  "owner8@email.com": { accountIndex: 8, pin: "8888" },
+  "owner9@email.com": { accountIndex: 9, pin: "9999" },
+};
+
 // ─── Routes ───────────────────────────────────────────────────────────────────
+
+// POST /api/login — authenticate with email + PIN
+app.post("/api/login", async (req, res) => {
+  const { email, pin } = req.body;
+  
+  if (!email || !ACCOUNT_CREDENTIALS[email]) {
+    return res.status(401).json({ error: "Invalid email" });
+  }
+  
+  const creds = ACCOUNT_CREDENTIALS[email];
+  if (pin !== creds.pin) {
+    return res.status(401).json({ error: "Invalid PIN" });
+  }
+  
+  try {
+    const accountIndex = creds.accountIndex;
+    const address = accounts[accountIndex];
+    const balance = await web3.eth.getBalance(address);
+    const label = getAccountLabel(accountIndex);
+    const role = getAccountRole(accountIndex);
+    const isAuthority = accountIndex === 0;
+
+    res.json({
+      success: true,
+      accountIndex,
+      address,
+      email,
+      label,
+      role,
+      isAuthority,
+      balance: parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4),
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/lands-reference — get pre-populated land reference data
+app.get("/api/lands-reference", (req, res) => {
+  res.json(LANDS_REFERENCE);
+});
 
 // GET /api/info — network info, all accounts/nodes
 app.get("/api/info", async (req, res) => {
@@ -46,12 +134,7 @@ app.get("/api/info", async (req, res) => {
           shortAddress: shortAddr(acc),
           balance: parseFloat(web3.utils.fromWei(bal, "ether")).toFixed(4),
           isAuthority: acc.toLowerCase() === authority.toLowerCase(),
-          label:
-            i === 0
-              ? "Government Authority"
-              : i <= 3
-              ? `Landowner ${i}`
-              : `Node ${i}`,
+          label: getAccountLabel(i),
         };
       })
     );
@@ -67,9 +150,15 @@ app.get("/api/info", async (req, res) => {
   }
 });
 
-// POST /api/register — register a new land parcel
+// POST /api/register — register a new land parcel (Government Authority only)
 app.post("/api/register", async (req, res) => {
-  const { landId, location, area, ownerIndex, documentHash } = req.body;
+  const { landId, location, area, ownerIndex, documentHash, userAccountIndex } = req.body;
+  
+  // Authorization: Only Government Authority (account 0) can register
+  if (userAccountIndex !== 0) {
+    return res.status(403).json({ error: "❌ Only Government Authority can register lands" });
+  }
+  
   if (
     landId == null ||
     !location ||
@@ -97,20 +186,35 @@ app.post("/api/register", async (req, res) => {
       blockNumber: tx.blockNumber.toString(),
       landId,
       owner: ownerAddress,
+      message: `✅ Land ${landId} registered and mined in Block #${tx.blockNumber}`,
     });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
 });
 
-// POST /api/transfer — transfer land ownership
+// POST /api/transfer — transfer land ownership (only current owner can transfer)
 app.post("/api/transfer", async (req, res) => {
-  const { landId, fromIndex, toIndex } = req.body;
-  if (landId == null || fromIndex == null || toIndex == null) {
+  const { landId, fromIndex, toIndex, userAccountIndex } = req.body;
+  if (landId == null || fromIndex == null || toIndex == null || userAccountIndex == null) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+  
   try {
+    // Get current land owner
+    const landData = await contract.methods.getLand(parseInt(landId)).call();
+    const currentOwnerAddress = landData[3]; // currentOwner from struct
     const fromAddress = accounts[fromIndex];
+    
+    // Authorization: Only current owner or authority can transfer
+    if (userAccountIndex !== fromIndex && userAccountIndex !== 0) {
+      return res.status(403).json({ error: "❌ Only the current owner can transfer this land" });
+    }
+    
+    if (fromAddress.toLowerCase() !== currentOwnerAddress.toLowerCase()) {
+      return res.status(403).json({ error: "❌ Address mismatch: You are not the current owner" });
+    }
+    
     const toAddress = accounts[toIndex];
     const tx = await contract.methods
       .transferLand(parseInt(landId), toAddress)
@@ -123,6 +227,7 @@ app.post("/api/transfer", async (req, res) => {
       landId,
       from: fromAddress,
       to: toAddress,
+      message: `✅ Land ${landId} transferred and mined in Block #${tx.blockNumber}`,
     });
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -182,13 +287,13 @@ app.get("/api/lands", async (req, res) => {
   }
 });
 
-// GET /api/blocks — recent blocks
+// GET /api/blocks — all blocks
 app.get("/api/blocks", async (req, res) => {
   try {
     const latest = await web3.eth.getBlockNumber();
     const blocks = [];
-    const count = Math.min(5, parseInt(latest.toString()));
-    for (let i = parseInt(latest.toString()); i > parseInt(latest.toString()) - count; i--) {
+    // Fetch all blocks from latest down to genesis (block 0)
+    for (let i = parseInt(latest.toString()); i >= 0; i--) {
       const block = await web3.eth.getBlock(i);
       blocks.push({
         number: block.number.toString(),

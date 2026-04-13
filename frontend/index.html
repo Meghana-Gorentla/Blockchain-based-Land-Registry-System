@@ -194,6 +194,17 @@
     position: relative;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
   }
+
+  .tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--text-muted);
+  }
+
+  .tab:disabled:hover {
+    color: var(--text-muted);
+    background: transparent;
+  }
   
   .tab:hover {
     color: var(--pink-600);
@@ -612,71 +623,143 @@
     display: flex;
     align-items: center;
     overflow-x: auto;
-    padding: 16px 0;
+    padding: 30px 20px;
     gap: 0;
     scrollbar-width: thin;
+    background: linear-gradient(135deg, rgba(127, 179, 92, 0.05) 0%, rgba(244, 114, 130, 0.05) 100%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
   }
   
   .block {
-    min-width: 135px;
-    background: var(--sage-50);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 14px;
+    min-width: 160px;
+    padding: 18px 14px;
     text-align: center;
     flex-shrink: 0;
-    transition: all var(--transition-fast);
     cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #ffffff 0%, var(--sage-50) 100%);
+    border-radius: 12px;
+    box-shadow: 
+      4px 4px 0 rgba(0,0,0,0.08),
+      8px 8px 0 rgba(0,0,0,0.04),
+      12px 12px 12px rgba(244, 114, 130, 0.15);
   }
   
+  .block::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    right: -2px;
+    bottom: 2px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), transparent);
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  
+  .block::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(to right, rgba(244, 114, 130, 0.1), transparent);
+    border-radius: 12px;
+    z-index: -1;
+  }
+
   .block:hover {
-    border-color: var(--pink-400);
-    transform: scale(1.02);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-6px) rotateX(5deg) rotateY(-2deg);
+    box-shadow: 
+      6px 6px 0 rgba(0,0,0,0.12),
+      12px 12px 0 rgba(0,0,0,0.06),
+      16px 16px 20px rgba(244, 114, 130, 0.25);
   }
-  
+
   .block.latest {
-    border-color: var(--pink-500);
-    background: var(--pink-50);
+    background: linear-gradient(135deg, #fff5f7 0%, var(--pink-50) 100%);
+    box-shadow: 
+      4px 4px 0 rgba(244, 114, 130, 0.3),
+      8px 8px 0 rgba(244, 114, 130, 0.2),
+      12px 12px 20px rgba(244, 114, 130, 0.25);
   }
   
   .block-num {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-muted);
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
   }
   
   .block-val {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 24px;
+    font-weight: 900;
     color: var(--pink-600);
-    margin: 4px 0;
+    margin: 6px 0;
+    font-family: 'SF Mono', monospace;
   }
   
   .block-sub {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    font-weight: 500;
   }
   
+  .block-hash {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-family: monospace;
+    word-break: break-all;
+    padding: 4px 2px;
+  }
+  
+  @keyframes dotFlow {
+    0% { left: -4px; }
+    100% { left: calc(100% - 4px); }
+  }
+
   .chain-link {
-    width: 40px;
-    height: 2px;
-    background: var(--border-light);
-    flex-shrink: 0;
+    width: 60px;
+    height: 16px;
     position: relative;
     margin: 0 8px;
+    flex-shrink: 0;
+    perspective: 800px;
   }
-  
-  .chain-link::after {
-    content: '→';
+
+  .chain-link::before {
+    content: '';
     position: absolute;
-    right: -14px;
-    top: -10px;
-    color: var(--pink-400);
-    font-size: 14px;
-    font-weight: 600;
+    width: 100%;
+    height: 3px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, var(--sage-300), var(--pink-400));
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(236, 100, 125, 0.5), inset 0 0 8px rgba(236, 100, 125, 0.2);
+  }
+
+  .chain-link::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 0;
+    border-left: 8px solid var(--pink-500);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    filter: drop-shadow(0 2px 4px rgba(236, 100, 125, 0.6));
   }
   
   /* Section Title - Enhanced */
@@ -787,9 +870,295 @@
     padding: 20px;
     margin-top: 20px;
   }
+  
+  /* LOGIN PAGE STYLES */
+  #loginPage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--sage-50) 0%, var(--pink-50) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  #loginPage.hidden {
+    display: none;
+  }
+  
+  .login-container {
+    background: white;
+    border-radius: var(--radius-2xl);
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    max-width: 600px;
+    width: 100%;
+  }
+  
+  .login-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  
+  .login-header .logo-icon {
+    margin: 0 auto 24px;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+  }
+  
+  .login-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  
+  .login-header p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+  
+  .login-accounts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .account-btn {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-align: center;
+  }
+  
+  .account-btn:hover {
+    border-color: var(--pink-400);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  
+  .account-btn.authority {
+    border-color: var(--pink-500);
+    background: linear-gradient(135deg, #ffffff, var(--pink-50));
+  }
+  
+  .account-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  
+  .account-label {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .account-addr {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  
+  .account-role {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  
+  .account-btn .account-role {
+    background: var(--sage-100);
+    color: var(--sage-600);
+  }
+  
+  .account-btn.authority .account-role {
+    background: var(--pink-100);
+    color: var(--pink-600);
+  }
+  
+  .user-header {
+    background: var(--sage-100);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  .user-header-left {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  
+  .user-header-left strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  
+  #logoutBtn {
+    background: transparent;
+    border: 1px solid var(--sage-300);
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--sage-600);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+  }
+  
+  #logoutBtn:hover {
+    background: var(--sage-200);
+    border-color: var(--sage-400);
+  }
+  
+  /* TRANSACTION STATUS MODAL */
+  #txStatusModal {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: white;
+    border: 2px solid var(--sage-200);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 380px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    font-size: 13px;
+  }
+  
+  #txStatusModal.hidden {
+    display: none;
+  }
+  
+  .tx-status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    color: var(--text-secondary);
+  }
+  
+  .tx-status-item.active {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  
+  .tx-status-item.completed {
+    color: var(--sage-600);
+  }
+  
+  .tx-status-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  
+  .tx-status-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--pink-200);
+    border-top: 2px solid var(--pink-500);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .tx-status-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  
+  .tx-status-result {
+    background: var(--sage-50);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    word-break: break-all;
+  }
 </style>
 </head>
 <body>
+
+<!-- SHA-256 Hash Implementation -->
+<script>
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function generateDocumentHash(landId, location) {
+  const date = new Date().toISOString().split('T')[0];
+  const input = `LandRegistry-${landId}-${location}-${date}`;
+  const hash = await sha256(input);
+  return '0x' + hash.substring(0, 40);
+}
+</script>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo-icon">🏛️</div>
+      <h1>Land Registry</h1>
+      <p>Secure Blockchain-Based Authentication</p>
+    </div>
+    <div class="login-form">
+      <div style="margin-bottom:20px">
+        <label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text-primary)">📧 Email Address</label>
+        <select id="loginEmail" style="width:100%;padding:12px;border:1px solid var(--border-light);border-radius:var(--radius-md);font-size:14px;background:white">
+          <option value="">Select your email...</option>
+          <option value="authority@landregistry.gov">🏛️ authority@landregistry.gov</option>
+          <option value="owner1@email.com">👨‍🌾 owner1@email.com</option>
+          <option value="owner2@email.com">👩‍🌾 owner2@email.com</option>
+          <option value="owner3@email.com">🏢 owner3@email.com</option>
+          <option value="owner4@email.com">� owner4@email.com</option>
+          <option value="owner5@email.com">👤 owner5@email.com</option>
+          <option value="owner6@email.com">👤 owner6@email.com</option>
+          <option value="owner7@email.com">👤 owner7@email.com</option>
+          <option value="owner8@email.com">👤 owner8@email.com</option>
+          <option value="owner9@email.com">👤 owner9@email.com</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text-primary)">🔐 PIN Code</label>
+        <input type="password" id="loginPin" placeholder="Enter 4-digit PIN" maxlength="4" style="width:100%;padding:12px;border:1px solid var(--border-light);border-radius:var(--radius-md);font-size:14px;letter-spacing:0.3em;text-align:center" />
+      </div>
+      <button onclick="loginWithEmailPin()" class="btn btn-success" style="width:100%;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px">🔓 Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSACTION STATUS MODAL -->
+<div id="txStatusModal" class="hidden">
+  <div class="tx-status-title">⛓️ Blockchain Transaction</div>
+  <div id="txStatusContainer"></div>
+  <div id="txStatusResult" class="tx-status-result hidden"></div>
+</div>
 
 <header>
   <div class="logo">
@@ -799,9 +1168,14 @@
       <p>Enterprise Ethereum DApp · Immutable Smart Contract</p>
     </div>
   </div>
-  <div class="status-badge">
-    <div class="dot"></div>
-    <span id="netStatus">Connecting to Ganache...</span>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="status-badge">
+      <div class="dot"></div>
+      <span id="netStatus">Connecting to Ganache...</span>
+    </div>
+    <div id="userHeader" style="display:none">
+      <button id="logoutBtn" onclick="logout()" class="btn btn-secondary" style="font-size:13px;padding:8px 16px">Logout</button>
+    </div>
   </div>
 </header>
 
@@ -863,15 +1237,21 @@
 
 <!-- REGISTER LAND -->
 <div id="page-register" class="page">
-  <div class="grid-2 gap">
+  <div id="authCheck-register" style="display:none" class="card" style="background:var(--pink-50);border-color:var(--pink-200);margin-bottom:24px">
+    <div style="color:var(--pink-600);font-weight:600;display:flex;align-items:center;gap:10px">
+      🔒 Government Authority Only
+    </div>
+    <p style="color:var(--pink-600);font-size:13px;margin-top:8px">Only the Government Authority (Account 0) can register new lands on the blockchain. Please log in with the Government Authority account to access this feature.</p>
+  </div>
+  <div id="registerForm-container" class="grid-2 gap">
     <div class="card">
       <div class="card-title"><span>📝</span> Register New Land Asset</div>
       <div id="alertRegister"></div>
-      <div class="form-row"><label>Land ID (unique identifier)</label><input type="number" id="regLandId" placeholder="e.g. 1001" /></div>
-      <div class="form-row"><label>Location / Address</label><input type="text" id="regLocation" placeholder="e.g. 45 MG Road, Bengaluru" /></div>
-      <div class="form-row"><label>Area (sq ft / acres)</label><input type="text" id="regArea" placeholder="e.g. 2400 sq ft" /></div>
+      <div class="form-row"><label>Land ID (unique identifier)</label><input type="number" id="regLandId" placeholder="e.g. 1001" onchange="autoFillLandProperties()" /></div>
+      <div class="form-row"><label>Location / Address</label><input type="text" id="regLocation" placeholder="e.g. 45 MG Road, Bengaluru" readonly /></div>
+      <div class="form-row"><label>Area (sq ft / acres)</label><input type="text" id="regArea" placeholder="e.g. 2400 sq ft" readonly /></div>
       <div class="form-row"><label>Assign Owner (Node)</label><select id="regOwner"><option value="">Loading accounts...</option></select></div>
-      <div class="form-row"><label>Document Hash (SHA-256 fingerprint)</label><input type="text" id="regDocHash" placeholder="e.g. 0xabc123..." /><small style="color:var(--text-muted);font-size:11px;margin-top:6px;display:block">🔒 Cryptographic proof of document authenticity</small></div>
+      <div class="form-row"><label>Document Hash (SHA-256 fingerprint)</label><input type="text" id="regDocHash" placeholder="e.g. 0xabc123..." readonly /><div id="hashStatus" style="color:var(--text-muted);font-size:11px;margin-top:6px;display:none">⏳ Generating cryptographic hash...</div><small style="color:var(--text-muted);font-size:11px;margin-top:6px;display:block">🔒 Auto-generated cryptographic proof based on Land ID & Location</small></div>
       <button class="btn btn-primary" onclick="registerLand()">🚀 Register on Blockchain</button>
     </div>
     <div class="card">
@@ -897,9 +1277,9 @@
     <div class="card">
       <div class="card-title"><span>🔄</span> Transfer Land Ownership</div>
       <div id="alertTransfer"></div>
-      <div class="form-row"><label>Land ID</label><input type="number" id="txLandId" placeholder="Enter Land ID" /></div>
-      <div class="form-row"><label>Current Owner (From Node)</label><select id="txFrom"><option value="">Select current owner...</option></select></div>
-      <div class="form-row"><label>New Owner (To Node)</label><select id="txTo"><option value="">Select new owner...</option></select></div>
+      <div class="form-row"><label>Land ID (Your Owned Land)</label><select id="txLandId" onchange="updateTransferFromField()"><option value="">Select a land you own...</option></select></div>
+      <div class="form-row"><label>Current Owner (Yourself)</label><input type="text" id="txFrom" readonly style="background:var(--sage-100);cursor:not-allowed" /></div>
+      <div class="form-row"><label>New Owner (To Node)</label><select id="txTo"><option value="">Select recipient...</option></select></div>
       <button class="btn btn-success" onclick="transferLand()">🔄 Execute Transfer</button>
       <div id="txResult" class="mt-20"></div>
     </div>
@@ -961,6 +1341,7 @@
 const API = 'http://localhost:3001/api';
 let accounts = [];
 let contractAddress = '';
+let currentUser = null; // {accountIndex, address, label, role, isAuthority}
 
 function showTab(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -989,10 +1370,11 @@ async function loadInfo() {
     document.getElementById('statNodes').textContent = data.totalAccounts;
     document.getElementById('statBlock').textContent = '#' + data.blockNumber;
     document.getElementById('statContract').textContent = short(data.contractAddress);
-    const opts = accounts.map((a,i) => `<option value="${i}">[${i}] ${a.label} — ${a.shortAddress}</option>`).join('');
+    const opts = accounts.map((a,i) => `<option value="${i}">${a.label}</option>`).join('');
     document.getElementById('regOwner').innerHTML = opts;
-    document.getElementById('txFrom').innerHTML = '<option value="">Select...</option>' + opts;
-    document.getElementById('txTo').innerHTML = '<option value="">Select...</option>' + opts;
+    // For transfer dropdowns, only show non-authority accounts
+    const ownerOpts = accounts.filter((a,i) => i !== 0).map((a,i) => `<option value="${i+1}">${a.label}</option>`).join('');
+    document.getElementById('txTo').innerHTML = '<option value="">Select recipient...</option>' + ownerOpts;
   } catch(e) {
     document.getElementById('netStatus').textContent = '❌ Connection Error';
   }
@@ -1000,35 +1382,49 @@ async function loadInfo() {
 
 async function loadDashboard() {
   await loadInfo();
+  
+  // Load lands and blocks in parallel (not sequential) for speed
   try {
-    const res = await fetch(API + '/lands');
-    const data = await res.json();
-    document.getElementById('statLands').textContent = data.lands.length;
-    const tbody = document.getElementById('landsTable');
-    if (data.lands.length === 0) {
-      tbody.innerHTML = '```<td colspan="4" style="text-align:center;color:var(--text-muted)">No registered assets</td>```';
-    } else {
-      tbody.innerHTML = data.lands.map(l => `
-        <tr>
-          <td><span class="badge badge-blue">#${l.landId}</span></td>
-          <td>${l.location}</td>
-          <td>${l.area}</td>
-          <td class="address">${l.currentOwner}</td>
-         `).join('');
+    const [landsRes, blocksRes] = await Promise.all([
+      fetch(API + '/lands'),
+      fetch(API + '/blocks')
+    ]);
+    
+    const landsData = await landsRes.json();
+    const blocksData = await blocksRes.json();
+    
+    // Update lands
+    if (landsData.lands && document.getElementById('statLands')) {
+      document.getElementById('statLands').textContent = landsData.lands.length;
+      const tbody = document.getElementById('landsTable');
+      if (landsData.lands.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">No registered assets</td></tr>';
+      } else {
+        tbody.innerHTML = landsData.lands.map(l => `
+          <tr>
+            <td><span class="badge badge-blue">#${l.landId}</span></td>
+            <td>${l.location}</td>
+            <td>${l.area}</td>
+            <td class="address">${l.currentOwner}</td>
+          </tr>`).join('');
+      }
     }
-  } catch(e) {}
-  try {
-    const res = await fetch(API + '/blocks');
-    const data = await res.json();
-    const chain = document.getElementById('chainViz');
-    chain.innerHTML = [...data.blocks].reverse().map((b, i) => `
-      ${i > 0 ? '<div class="chain-link"></div>' : ''}
-      <div class="block ${i === data.blocks.length-1 ? 'latest' : ''}">
-        <div class="block-num">Block</div>
-        <div class="block-val">#${b.number}</div>
-        <div class="block-sub">${b.txCount} txns</div>
-      </div>`).join('');
-  } catch(e) {}
+    
+    // Update blocks (show all blocks)
+    if (blocksData.blocks && document.getElementById('chainViz')) {
+      const chain = document.getElementById('chainViz');
+      const lastBlocks = [...blocksData.blocks].reverse();
+      chain.innerHTML = lastBlocks.map((b, i) => `
+        ${i > 0 ? '<div class="chain-link"></div>' : ''}
+        <div class="block ${i === lastBlocks.length-1 ? 'latest' : ''}">
+          <div class="block-num">Block</div>
+          <div class="block-val">#${b.number}</div>
+          <div class="block-sub">${b.txCount} txn${b.txCount !== 1 ? 's' : ''}</div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    console.error('Dashboard load error:', e);
+  }
 }
 
 async function loadNodes() {
@@ -1046,15 +1442,48 @@ async function loadNodes() {
         ${a.isAuthority ? '<div class="badge badge-orange" style="margin-top:8px;font-size:9px">AUTHORITY</div>' : ''}
       </div>`).join('');
     document.getElementById('nodesTable').innerHTML = accounts.map(a => `
-      迭代
+      <tr>
         <td>${a.index}</td>
         <td>${a.label}</td>
         <td class="address">${a.address}</td>
         <td>Ξ ${a.balance}</td>
         <td>${a.isAuthority ? '<span class="badge badge-orange">Government Authority</span>' : '<span class="badge badge-blue">Landowner / Node</span>'}</td>
-       `).join('');
+      </tr>`).join('');
   } catch(e) {
     showAlert('alertNodes', 'Unable to fetch node data', 'error');
+  }
+}
+
+async function autoFillLandProperties() {
+  const landId = document.getElementById('regLandId').value;
+  if (!landId) {
+    document.getElementById('regLocation').value = '';
+    document.getElementById('regArea').value = '';
+    document.getElementById('regDocHash').value = '';
+    document.getElementById('hashStatus').style.display = 'none';
+    return;
+  }
+  try {
+    const res = await fetch(API + '/lands-reference');
+    const lands = await res.json();
+    if (lands[landId]) {
+      document.getElementById('regLocation').value = lands[landId].location;
+      document.getElementById('regArea').value = lands[landId].area;
+      // Show hash generation status
+      document.getElementById('hashStatus').style.display = 'block';
+      const hash = await generateDocumentHash(landId, lands[landId].location);
+      document.getElementById('regDocHash').value = hash;
+      document.getElementById('hashStatus').style.display = 'none';
+    } else {
+      document.getElementById('regLocation').value = '';
+      document.getElementById('regArea').value = '';
+      document.getElementById('regDocHash').value = '';
+      document.getElementById('hashStatus').style.display = 'none';
+      alert('Land ID ' + landId + ' not found in reference data. Available: 1001-1020');
+    }
+  } catch(e) {
+    console.error('Error fetching land reference:', e);
+    document.getElementById('hashStatus').style.display = 'none';
   }
 }
 
@@ -1064,52 +1493,112 @@ async function registerLand() {
   const area = document.getElementById('regArea').value;
   const ownerIndex = document.getElementById('regOwner').value;
   const documentHash = document.getElementById('regDocHash').value;
+  
+  if (!currentUser) {
+    return showAlert('alertRegister', '❌ You must be logged in', 'error');
+  }
+  
   if (!landId || !location || !area || ownerIndex === '' || !documentHash) {
     return showAlert('alertRegister', '⚠️ All fields required', 'error');
   }
+  
+  showTxStatus('Registering Land #' + landId);
   showAlert('alertRegister', '⏳ Submitting transaction to blockchain...', 'info');
+  
   try {
+    updateTxStatus('signing');
+    await new Promise(r => setTimeout(r, 800)); // Simulate signing time
+    
+    updateTxStatus('broadcasting', true);
+    await new Promise(r => setTimeout(r, 500)); // Simulate broadcast time
+    
+    updateTxStatus('mining');
+    
     const res = await fetch(API + '/register', { 
       method: 'POST', 
       headers: {'Content-Type':'application/json'}, 
-      body: JSON.stringify({ landId: parseInt(landId), location, area, ownerIndex: parseInt(ownerIndex), documentHash }) 
+      body: JSON.stringify({ 
+        landId: parseInt(landId), 
+        location, 
+        area, 
+        ownerIndex: parseInt(ownerIndex), 
+        documentHash,
+        userAccountIndex: currentUser.accountIndex
+      }) 
     });
     const data = await res.json();
+    
     if (data.success) {
-      showAlert('alertRegister', `✅ Land #${data.landId} registered! TX: ${data.txHash.slice(0,20)}...`, 'success');
+      updateTxStatus('mining', true);
+      showTxResult(data.txHash, data.blockNumber, '🏠 Land #' + data.landId + ' registered');
+      showAlert('alertRegister', `✅ ${data.message}`, 'success');
       document.getElementById('lastRegTx').innerHTML = `
         <b>Land ID:</b> #${data.landId}<br>
         <b>Block:</b> #${data.blockNumber}<br>
         <b>TX Hash:</b> <span class="address">${data.txHash}</span><br>
         <b>Owner:</b> <span class="address">${data.owner}</span>`;
+      // Clear form
+      document.getElementById('regLandId').value = '';
+      document.getElementById('regLocation').value = '';
+      document.getElementById('regArea').value = '';
+      document.getElementById('regDocHash').value = '';
+      hideTxStatus();
     } else {
       showAlert('alertRegister', '❌ ' + data.error, 'error');
+      document.getElementById('txStatusModal').classList.add('hidden');
     }
   } catch(e) {
-    showAlert('alertRegister', '❌ Server error', 'error');
+    showAlert('alertRegister', '❌ ' + e.message, 'error');
+    document.getElementById('txStatusModal').classList.add('hidden');
   }
 }
 
 async function transferLand() {
   const landId = document.getElementById('txLandId').value;
-  const fromIndex = document.getElementById('txFrom').value;
   const toIndex = document.getElementById('txTo').value;
-  if (!landId || fromIndex === '' || toIndex === '') {
+  
+  if (!currentUser) {
+    return showAlert('alertTransfer', '❌ You must be logged in', 'error');
+  }
+  
+  if (!landId || toIndex === '') {
     return showAlert('alertTransfer', '⚠️ All fields required', 'error');
   }
-  if (fromIndex === toIndex) {
+  
+  // Current user is always the fromIndex
+  const fromIndex = currentUser.accountIndex;
+  
+  if (fromIndex == toIndex) {
     return showAlert('alertTransfer', '⚠️ Cannot transfer to same account', 'error');
   }
+  
+  showTxStatus('Transferring Land #' + landId);
   showAlert('alertTransfer', '⏳ Processing transfer...', 'info');
+  
   try {
+    updateTxStatus('signing');
+    await new Promise(r => setTimeout(r, 800)); // Simulate signing time
+    
+    updateTxStatus('broadcasting', true);
+    await new Promise(r => setTimeout(r, 500)); // Simulate broadcast time
+    
+    updateTxStatus('mining');
+    
     const res = await fetch(API + '/transfer', { 
       method: 'POST', 
       headers: {'Content-Type':'application/json'}, 
-      body: JSON.stringify({ landId: parseInt(landId), fromIndex: parseInt(fromIndex), toIndex: parseInt(toIndex) }) 
+      body: JSON.stringify({ 
+        landId: parseInt(landId), 
+        fromIndex: parseInt(fromIndex), 
+        toIndex: parseInt(toIndex),
+        userAccountIndex: currentUser.accountIndex
+      }) 
     });
     const data = await res.json();
     if (data.success) {
-      showAlert('alertTransfer', `✅ Land #${data.landId} transferred! Block #${data.blockNumber}`, 'success');
+      updateTxStatus('mining', true);
+      showTxResult(data.txHash, data.blockNumber, '🔄 Ownership transferred');
+      showAlert('alertTransfer', `✅ ${data.message}`, 'success');
       document.getElementById('txResult').innerHTML = `
         <div class="info-panel">
           <div class="card-title" style="color:var(--sage-600);margin-bottom:12px">✅ Transfer Confirmed</div>
@@ -1120,11 +1609,19 @@ async function transferLand() {
             <tr><td style="color:var(--text-muted);padding:6px 0">To</td><td class="address">${data.to}</td></tr>
           </table>
         </div>`;
+      // Clear form and refresh ownership
+      document.getElementById('txLandId').value = '';
+      document.getElementById('txFrom').value = '';
+      document.getElementById('txTo').value = '';
+      checkUserOwnership(); // Refresh owned lands list
+      hideTxStatus();
     } else {
       showAlert('alertTransfer', '❌ ' + data.error, 'error');
+      document.getElementById('txStatusModal').classList.add('hidden');
     }
   } catch(e) {
-    showAlert('alertTransfer', '❌ Transfer failed', 'error');
+    showAlert('alertTransfer', '❌ ' + e.message, 'error');
+    document.getElementById('txStatusModal').classList.add('hidden');
   }
 }
 
@@ -1189,8 +1686,245 @@ async function loadBlockchain() {
   }
 }
 
-loadDashboard();
-setInterval(loadDashboard, 15000);
+// Initialize: Check if user is already logged in
+window.addEventListener('load', async () => {
+  const savedUser = sessionStorage.getItem('currentUser');
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    showMainApp();
+  } else {
+    showLoginPage();
+  }
+});
+
+function showLoginPage() {
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.querySelector('header').style.display = 'none';
+  document.querySelector('nav').style.display = 'none';
+  document.querySelector('main').style.display = 'none';
+  // Focus on email field
+  setTimeout(() => document.getElementById('loginEmail').focus(), 100);
+}
+
+async function loginWithEmailPin() {
+  const email = document.getElementById('loginEmail').value;
+  const pin = document.getElementById('loginPin').value;
+  
+  if (!email) {
+    alert('❌ Please select your email');
+    return;
+  }
+  
+  if (!pin || pin.length !== 4) {
+    alert('❌ PIN must be 4 digits');
+    return;
+  }
+  
+  try {
+    const res = await fetch(API + '/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, pin})
+    });
+    
+    const data = await res.json();
+    
+    if (data.success) {
+      currentUser = data;
+      sessionStorage.setItem('currentUser', JSON.stringify(data));
+      showMainApp();
+    } else {
+      alert('❌ Login failed: ' + (data.error || 'Invalid credentials'));
+    }
+  } catch(e) {
+    alert('❌ Login error: ' + e.message);
+    console.error('Login error:', e);
+  }
+}
+
+async function checkUserOwnership() {
+  if (!currentUser) return false;
+  
+  try {
+    const res = await fetch(API + '/lands');
+    const response = await res.json();
+    const lands = response.lands || response;
+    const userOwnedLands = lands.filter(land => 
+      land.fullOwner && land.fullOwner.toLowerCase() === currentUser.address.toLowerCase()
+    );
+    window.userOwnedLands = userOwnedLands;
+    return userOwnedLands.length > 0;
+  } catch(e) {
+    console.error('Error checking ownership:', e);
+    return false;
+  }
+}
+
+function updateRoleBasedUI() {
+  // Update Register tab - only Authority can use it
+  const registerTab = document.querySelector('[onclick=\"showTab(\'register\')\"]');
+  const registerAuthCheck = document.getElementById('authCheck-register');
+  const registerFormContainer = document.getElementById('registerForm-container');
+  
+  if (!currentUser.isAuthority) {
+    // Hide register form for non-authority users
+    if (registerFormContainer) registerFormContainer.style.display = 'none';
+    if (registerAuthCheck) registerAuthCheck.style.display = 'block';
+    if (registerTab) registerTab.setAttribute('disabled', 'disabled');
+  } else {
+    // Show register form for authority
+    if (registerFormContainer) registerFormContainer.style.display = 'grid';
+    if (registerAuthCheck) registerAuthCheck.style.display = 'none';
+    if (registerTab) registerTab.removeAttribute('disabled');
+  }
+  
+  // Update Transfer tab - show if user owns at least one land (including Authority)
+  const transferTab = document.querySelector('[onclick="showTab(\'transfer\')"]');
+  const transferPageDiv = document.getElementById('page-transfer');
+  
+  if (window.userOwnedLands && window.userOwnedLands.length > 0) {
+    // User owns lands - enable transfer for all users (Authority + Landowners)
+    if (transferTab) transferTab.removeAttribute('disabled');
+    if (transferPageDiv) {
+      const messageDiv = transferPageDiv.querySelector('.massage');
+      if (messageDiv) messageDiv.style.display = 'none';
+    }
+    populateUserLandsDropdown();
+  } else {
+    // User doesn't own any lands - disable transfer
+    if (transferTab) transferTab.setAttribute('disabled', 'disabled');
+    if (transferPageDiv) {
+      let messageDiv = transferPageDiv.querySelector('.massage');
+      if (!messageDiv) {
+        messageDiv = document.createElement('div');
+        messageDiv.className = 'massage';
+        messageDiv.innerHTML = '<p style="color:var(--pink-600);font-size:13px;margin-top:8px">❌ You don\'t own any land yet. Register or acquire land ownership to perform transfers.</p>';
+        transferPageDiv.insertBefore(messageDiv, transferPageDiv.firstChild);
+      } else {
+        messageDiv.style.display = 'block';
+      }
+    }
+  }
+}
+
+function populateUserLandsDropdown() {
+  if (!window.userOwnedLands || !currentUser) return;
+  
+  // Populate Land ID dropdown with user's owned lands
+  const landIdSelect = document.getElementById('txLandId');
+  if (landIdSelect) {
+    let html = '<option value="">Select a land you own...</option>';
+    window.userOwnedLands.forEach(land => {
+      html += '<option value="' + land.landId + '">Land #' + land.landId + ' (' + land.location + ')</option>';
+    });
+    landIdSelect.innerHTML = html;
+  }
+}
+
+function updateTransferFromField() {
+  const landIdSelect = document.getElementById('txLandId');
+  const selectedLandId = landIdSelect.value;
+  const fromInput = document.getElementById('txFrom');
+  
+  if (!selectedLandId) {
+    fromInput.value = '';
+    return;
+  }
+  
+  if (!window.userOwnedLands) return;
+  
+  const land = window.userOwnedLands.find(l => l.landId == selectedLandId);
+  
+  if (land && fromInput && currentUser) {
+    fromInput.value = currentUser.label + ' (Current Owner)';
+  }
+}
+
+// Transaction Status UI Functions
+function showTxStatus(title = 'Processing Transaction') {
+  const modal = document.getElementById('txStatusModal');
+  const container = document.getElementById('txStatusContainer');
+  
+  modal.classList.remove('hidden');
+  container.innerHTML = `
+    <div class="tx-status-item active">
+      <div class="tx-status-icon"><div class="tx-status-spinner"></div></div>
+      <span>Signing with private keys...</span>
+    </div>
+    <div class="tx-status-item">
+      <div class="tx-status-icon">📤</div>
+      <span>Broadcasting to Ganache...</span>
+    </div>
+    <div class="tx-status-item">
+      <div class="tx-status-icon">⛏️</div>
+      <span>Mining block...</span>
+    </div>
+  `;
+  document.getElementById('txStatusResult').classList.add('hidden');
+}
+
+function updateTxStatus(step, completed = false) {
+  const items = document.querySelectorAll('.tx-status-item');
+  let stepNum = 0;
+  
+  switch(step) {
+    case 'signing': stepNum = 0; break;
+    case 'broadcasting': stepNum = 1; break;
+    case 'mining': stepNum = 2; break;
+  }
+  
+  // Update completed steps
+  for (let i = 0; i < stepNum; i++) {
+    items[i].classList.remove('active');
+    items[i].classList.add('completed');
+    const icon = items[i].querySelector('.tx-status-icon');
+    icon.innerHTML = '✅';
+  }
+  
+  // Update current step
+  if (stepNum < items.length) {
+    items[stepNum].classList.add('active');
+    if (completed) {
+      items[stepNum].classList.remove('active');
+      items[stepNum].classList.add('completed');
+      const icon = items[stepNum].querySelector('.tx-status-icon');
+      icon.innerHTML = '✅';
+    }
+  }
+}
+
+function showTxResult(txHash, blockNumber, message = '') {
+  const resultDiv = document.getElementById('txStatusResult');
+  resultDiv.classList.remove('hidden');
+  resultDiv.innerHTML = `<strong>✅ Success!</strong><br><br>
+    <strong>Block #</strong> ${blockNumber}<br>
+    <strong>TX Hash:</strong><br><span style="word-break:break-all">${txHash}</span>${message ? '<br><br>' + message : ''}`;
+}
+
+function hideTxStatus() {
+  setTimeout(() => {
+    document.getElementById('txStatusModal').classList.add('hidden');
+  }, 3000);
+}
+
+function showMainApp() {
+  document.getElementById('loginPage').classList.add('hidden');
+  document.querySelector('header').style.display = 'flex';
+  document.querySelector('nav').style.display = 'flex';
+  document.querySelector('main').style.display = 'block';
+  document.getElementById('userHeader').style.display = 'block';
+  checkUserOwnership().then(() => {
+    updateRoleBasedUI();
+  });
+  loadDashboard();
+  setInterval(loadDashboard, 15000);
+}
+
+function logout() {
+  currentUser = null;
+  sessionStorage.removeItem('currentUser');
+  window.location.reload();
+}
 </script>
 </body>
 </html>
