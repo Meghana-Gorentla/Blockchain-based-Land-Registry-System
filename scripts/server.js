@@ -76,6 +76,16 @@ const ACCOUNT_CREDENTIALS = {
   "owner7@email.com": { accountIndex: 7, pin: "7777" },
   "owner8@email.com": { accountIndex: 8, pin: "8888" },
   "owner9@email.com": { accountIndex: 9, pin: "9999" },
+  "owner10@email.com": { accountIndex: 10, pin: "1010" },
+  "owner11@email.com": { accountIndex: 11, pin: "1111" },
+  "owner12@email.com": { accountIndex: 12, pin: "1212" },
+  "owner13@email.com": { accountIndex: 13, pin: "1313" },
+  "owner14@email.com": { accountIndex: 14, pin: "1414" },
+  "owner15@email.com": { accountIndex: 15, pin: "1515" },
+  "owner16@email.com": { accountIndex: 16, pin: "1616" },
+  "owner17@email.com": { accountIndex: 17, pin: "1717" },
+  "owner18@email.com": { accountIndex: 18, pin: "1818" },
+  "owner19@email.com": { accountIndex: 19, pin: "1919" },
 };
 
 // ─── Routes ───────────────────────────────────────────────────────────────────

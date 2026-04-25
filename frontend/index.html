@@ -1136,12 +1136,22 @@ async function generateDocumentHash(landId, location) {
           <option value="owner1@email.com">👨‍🌾 owner1@email.com</option>
           <option value="owner2@email.com">👩‍🌾 owner2@email.com</option>
           <option value="owner3@email.com">🏢 owner3@email.com</option>
-          <option value="owner4@email.com">� owner4@email.com</option>
+          <option value="owner4@email.com">🏠 owner4@email.com</option>
           <option value="owner5@email.com">👤 owner5@email.com</option>
           <option value="owner6@email.com">👤 owner6@email.com</option>
           <option value="owner7@email.com">👤 owner7@email.com</option>
           <option value="owner8@email.com">👤 owner8@email.com</option>
           <option value="owner9@email.com">👤 owner9@email.com</option>
+          <option value="owner10@email.com">👤 owner10@email.com</option>
+          <option value="owner11@email.com">👤 owner11@email.com</option>
+          <option value="owner12@email.com">👤 owner12@email.com</option>
+          <option value="owner13@email.com">👤 owner13@email.com</option>
+          <option value="owner14@email.com">👤 owner14@email.com</option>
+          <option value="owner15@email.com">👤 owner15@email.com</option>
+          <option value="owner16@email.com">👤 owner16@email.com</option>
+          <option value="owner17@email.com">👤 owner17@email.com</option>
+          <option value="owner18@email.com">👤 owner18@email.com</option>
+          <option value="owner19@email.com">👤 owner19@email.com</option>
         </select>
       </div>
       <div style="margin-bottom:20px">
@@ -1312,6 +1322,17 @@ async function generateDocumentHash(landId, location) {
     </div>
     <div class="card"><div class="card-title"><span>📜</span> Transaction Audit Log</div><div style="overflow-x: auto;"><table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Timestamp</th></tr></thead><tbody id="txHistory"></tbody></table></div></div>
   </div>
+  <!-- Browse All Registered Lands -->
+  <div class="card mt-24">
+    <div class="card-title"><span>🏘️</span> Browse All Registered Lands <span id="allLandsCount" style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:8px"></span></div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Click any row to load full details above.</p>
+    <div style="overflow-x:auto">
+      <table style="width:100%">
+        <thead><tr><th>ID</th><th>Location</th><th>Area</th><th>Current Owner</th><th>Action</th></tr></thead>
+        <tbody id="allLandsTable"><tr><td colspan="5" class="loading">Loading all lands...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- BLOCKCHAIN -->
@@ -1350,6 +1371,7 @@ function showTab(name) {
   event.target.classList.add('active');
   if (name === 'nodes') loadNodes();
   if (name === 'blockchain') loadBlockchain();
+  if (name === 'explore') loadAllLands();
 }
 
 function short(addr) {
@@ -1432,7 +1454,8 @@ async function loadNodes() {
     const res = await fetch(API + '/info');
     const data = await res.json();
     accounts = data.accounts;
-    const icons = ['🏛️','👨‍🌾','👩‍🌾','🏢','🏠','👤','👤','👤','👤','👤'];
+    const icons = ['🏛️','👨‍🌾','👩‍🌾','🏢','🏠','👤','👤','👤','👤','👤',
+                    '👤','👤','👤','👤','👤','👤','👤','👤','👤','👤'];
     document.getElementById('nodesGrid').innerHTML = accounts.map((a,i) => `
       <div class="node-card ${a.isAuthority ? 'authority' : ''}">
         <div class="node-icon">${icons[i] || '👤'}</div>
@@ -1625,15 +1648,19 @@ async function transferLand() {
   }
 }
 
-async function exploreLand() {
-  const id = document.getElementById('exploreId').value;
-  if (!id) return;
+async function exploreLand(id) {
+  const landId = id || document.getElementById('exploreId').value;
+  if (!landId) return;
+  // Also fill the search box if called programmatically
+  document.getElementById('exploreId').value = landId;
+  // Scroll to top of explore section
+  document.getElementById('page-explore').scrollIntoView({ behavior: 'smooth', block: 'start' });
   try {
-    const res = await fetch(API + '/land/' + id);
+    const res = await fetch(API + '/land/' + landId);
     const data = await res.json();
     if (data.error) {
       document.getElementById('exploreResult').classList.add('hidden');
-      alert('Land not found');
+      alert('Land not found or not yet registered on the blockchain.');
       return;
     }
     document.getElementById('exploreResult').classList.remove('hidden');
@@ -1658,6 +1685,33 @@ async function exploreLand() {
       </tr>`).join('');
   } catch(e) {
     alert('Error fetching land');
+  }
+}
+
+async function loadAllLands() {
+  const tbody = document.getElementById('allLandsTable');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" class="loading">Loading all registered lands...</td></tr>';
+  try {
+    const res = await fetch(API + '/lands');
+    const data = await res.json();
+    const lands = data.lands || [];
+    const countEl = document.getElementById('allLandsCount');
+    if (countEl) countEl.textContent = `(${lands.length} total)`;
+    if (lands.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">No lands have been registered yet. Use the Register Land tab to add land records.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lands.map(l => `
+      <tr style="cursor:pointer" onclick="exploreLand('${l.landId}')" title="Click to view full details">
+        <td><span class="badge badge-blue">#${l.landId}</span></td>
+        <td>${l.location}</td>
+        <td>${l.area}</td>
+        <td class="address">${l.currentOwner}</td>
+        <td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();exploreLand('${l.landId}')">🔍 View</button></td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--accent-danger)">Error loading lands</td></tr>';
   }
 }
 
