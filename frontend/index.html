@@ -1257,7 +1257,7 @@ async function generateDocumentHash(landId, location) {
     <div class="card">
       <div class="card-title"><span>📝</span> Register New Land Asset</div>
       <div id="alertRegister"></div>
-      <div class="form-row"><label>Land ID (unique identifier)</label><input type="number" id="regLandId" placeholder="e.g. 1001" onchange="autoFillLandProperties()" /></div>
+      <div class="form-row"><label>Land ID (unique identifier)</label><input type="number" id="regLandId" placeholder="e.g. 1001" oninput="autoFillLandProperties()" /></div>
       <div class="form-row"><label>Location / Address</label><input type="text" id="regLocation" placeholder="e.g. 45 MG Road, Bengaluru" readonly /></div>
       <div class="form-row"><label>Area (sq ft / acres)</label><input type="text" id="regArea" placeholder="e.g. 2400 sq ft" readonly /></div>
       <div class="form-row"><label>Assign Owner (Node)</label><select id="regOwner"><option value="">Loading accounts...</option></select></div>
