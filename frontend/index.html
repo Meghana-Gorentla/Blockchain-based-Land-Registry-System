@@ -1142,16 +1142,6 @@ async function generateDocumentHash(landId, location) {
           <option value="owner7@email.com">👤 owner7@email.com</option>
           <option value="owner8@email.com">👤 owner8@email.com</option>
           <option value="owner9@email.com">👤 owner9@email.com</option>
-          <option value="owner10@email.com">👤 owner10@email.com</option>
-          <option value="owner11@email.com">👤 owner11@email.com</option>
-          <option value="owner12@email.com">👤 owner12@email.com</option>
-          <option value="owner13@email.com">👤 owner13@email.com</option>
-          <option value="owner14@email.com">👤 owner14@email.com</option>
-          <option value="owner15@email.com">👤 owner15@email.com</option>
-          <option value="owner16@email.com">👤 owner16@email.com</option>
-          <option value="owner17@email.com">👤 owner17@email.com</option>
-          <option value="owner18@email.com">👤 owner18@email.com</option>
-          <option value="owner19@email.com">👤 owner19@email.com</option>
         </select>
       </div>
       <div style="margin-bottom:20px">
@@ -1308,13 +1298,7 @@ async function generateDocumentHash(landId, location) {
 
 <!-- EXPLORE -->
 <div id="page-explore" class="page">
-  <div class="card mb-24">
-    <div class="card-title"><span>🔍</span> Land Record Explorer</div>
-    <div style="display:flex;gap:14px;align-items:flex-end">
-      <div style="flex:1"><label>Enter Land ID</label><input type="number" id="exploreId" placeholder="e.g. 1001" /></div>
-      <button class="btn btn-primary" onclick="exploreLand()">🔍 Search</button>
-    </div>
-  </div>
+
   <div id="exploreResult" class="hidden">
     <div class="grid-2 gap mb-24">
       <div class="card"><div class="card-title"><span>🏡</span> Asset Details</div><table><tbody id="landDetailTable"></tbody></table></div>
@@ -1427,7 +1411,7 @@ async function loadDashboard() {
             <td><span class="badge badge-blue">#${l.landId}</span></td>
             <td>${l.location}</td>
             <td>${l.area}</td>
-            <td class="address">${l.currentOwner}</td>
+            <td><span class="address">${l.currentOwner}</span><br><span style="font-size:11px;color:var(--text-secondary)">👤 ${getAddressLabel(l.fullOwner)}</span></td>
           </tr>`).join('');
       }
     }
@@ -1442,6 +1426,7 @@ async function loadDashboard() {
           <div class="block-num">Block</div>
           <div class="block-val">#${b.number}</div>
           <div class="block-sub">${b.txCount} txn${b.txCount !== 1 ? 's' : ''}</div>
+          ${b.details && b.details.length > 0 ? `<div style="font-size:10px;margin-top:8px;color:var(--sage-800);background:var(--sage-100);padding:4px 6px;border-radius:4px;text-align:center;line-height:1.4">${b.details.join('<br>')}</div>` : ''}
         </div>`).join('');
     }
   } catch(e) {
@@ -1492,6 +1477,7 @@ async function autoFillLandProperties() {
     if (lands[landId]) {
       document.getElementById('regLocation').value = lands[landId].location;
       document.getElementById('regArea').value = lands[landId].area;
+      document.getElementById('alertRegister').innerHTML = ''; // Clear previous warnings
       // Show hash generation status
       document.getElementById('hashStatus').style.display = 'block';
       const hash = await generateDocumentHash(landId, lands[landId].location);
@@ -1502,7 +1488,13 @@ async function autoFillLandProperties() {
       document.getElementById('regArea').value = '';
       document.getElementById('regDocHash').value = '';
       document.getElementById('hashStatus').style.display = 'none';
-      alert('Land ID ' + landId + ' not found in reference data. Available: 1001-1020');
+      
+      // Only show warning if they've typed a full 4-digit ID
+      if (landId.length >= 4) {
+        showAlert('alertRegister', 'Land ID ' + landId + ' not found in reference data. Available: 1001-1020', 'warning');
+      } else {
+        document.getElementById('alertRegister').innerHTML = '';
+      }
     }
   } catch(e) {
     console.error('Error fetching land reference:', e);
@@ -1648,11 +1640,16 @@ async function transferLand() {
   }
 }
 
+function getAddressLabel(addr) {
+  if (!addr || addr === '0x0000000000000000000000000000000000000000') return 'None';
+  const acc = accounts.find(a => a.address.toLowerCase() === addr.toLowerCase());
+  return acc ? acc.label : 'Unknown';
+}
+
 async function exploreLand(id) {
-  const landId = id || document.getElementById('exploreId').value;
+  const landId = id;
   if (!landId) return;
-  // Also fill the search box if called programmatically
-  document.getElementById('exploreId').value = landId;
+  
   // Scroll to top of explore section
   document.getElementById('page-explore').scrollIntoView({ behavior: 'smooth', block: 'start' });
   try {
@@ -1668,19 +1665,20 @@ async function exploreLand(id) {
       <tr><td style="color:var(--text-muted);padding:8px">Land ID</td><td><span class="badge badge-blue">#${data.landId}</span></td></tr>
       <tr><td style="color:var(--text-muted);padding:8px">Location</td><td>${data.location}</td></tr>
       <tr><td style="color:var(--text-muted);padding:8px">Area</td><td>${data.area}</td></tr>
-      <tr><td style="color:var(--text-muted);padding:8px">Current Owner</td><td class="address">${data.currentOwner}</td></tr>
+      <tr><td style="color:var(--text-muted);padding:8px">Current Owner</td><td><span class="address">${data.currentOwner}</span> <span class="badge badge-gray" style="margin-left:8px;background:var(--sage-100);color:var(--sage-800)">👤 ${getAddressLabel(data.currentOwner)}</span></td></tr>
       <tr><td style="color:var(--text-muted);padding:8px">Document Hash</td><td class="address">${data.documentHash}</td></tr>
       <tr><td style="color:var(--text-muted);padding:8px">Registered</td><td>${data.registeredAt}</td></tr>`;
     document.getElementById('ownershipHistory').innerHTML = data.ownershipHistory.map((addr,i) => `
       <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light)">
         <span class="badge ${i===0?'badge-orange':'badge-blue'}">${i===0?'Original Owner':'Owner '+(i)}</span>
         <span class="address">${addr}</span>
+        <span class="badge badge-gray" style="background:var(--sage-100);color:var(--sage-800)">👤 ${getAddressLabel(addr)}</span>
       </div>`).join('');
     document.getElementById('txHistory').innerHTML = data.transactions.map(tx => `
       <tr>
         <td><span class="badge ${tx.type==='REGISTER'?'badge-orange':'badge-green'}">${tx.type}</span></td>
-        <td class="address">${short(tx.from)}</td>
-        <td class="address">${short(tx.to)}</td>
+        <td><span class="address">${short(tx.from)}</span><br><span style="font-size:11px;color:var(--text-secondary)">👤 ${getAddressLabel(tx.from)}</span></td>
+        <td><span class="address">${short(tx.to)}</span><br><span style="font-size:11px;color:var(--text-secondary)">👤 ${getAddressLabel(tx.to)}</span></td>
         <td style="color:var(--text-muted)">${tx.timestamp}</td>
       </tr>`).join('');
   } catch(e) {
@@ -1707,7 +1705,7 @@ async function loadAllLands() {
         <td><span class="badge badge-blue">#${l.landId}</span></td>
         <td>${l.location}</td>
         <td>${l.area}</td>
-        <td class="address">${l.currentOwner}</td>
+        <td><span class="address">${l.currentOwner}</span><br><span style="font-size:11px;color:var(--text-secondary)">👤 ${getAddressLabel(l.fullOwner)}</span></td>
         <td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();exploreLand('${l.landId}')">🔍 View</button></td>
       </tr>`).join('');
   } catch(e) {
@@ -1727,12 +1725,16 @@ async function loadBlockchain() {
         <div class="block-val">#${b.number}</div>
         <div class="block-sub">${b.txCount} txns</div>
         <div class="block-sub" style="font-size:9px">${b.hash.slice(0,10)}...</div>
+        ${b.details && b.details.length > 0 ? `<div style="font-size:10px;margin-top:8px;color:var(--sage-800);background:var(--sage-100);padding:4px 6px;border-radius:4px;text-align:center;line-height:1.4">${b.details.join('<br>')}</div>` : ''}
       </div>`).join('');
     document.getElementById('blocksTable').innerHTML = blocks.map(b => `
       <tr>
         <td><span class="badge badge-blue">#${b.number}</span></td>
         <td class="address">${b.hash}</td>
-        <td><span class="badge ${b.txCount>0?'badge-green':'badge-blue'}">${b.txCount} txns</span></td>
+        <td>
+          <span class="badge ${b.txCount>0?'badge-green':'badge-blue'}">${b.txCount} txns</span>
+          ${b.details && b.details.length > 0 ? `<div style="margin-top:8px;font-size:12px;color:var(--text-secondary);line-height:1.6">${b.details.map(d=>`• ${d}`).join('<br>')}</div>` : ''}
+        </td>
         <td style="color:var(--text-muted)">${b.timestamp}</td>
       </tr>`).join('');
   } catch(e) {

@@ -76,16 +76,6 @@ const ACCOUNT_CREDENTIALS = {
   "owner7@email.com": { accountIndex: 7, pin: "7777" },
   "owner8@email.com": { accountIndex: 8, pin: "8888" },
   "owner9@email.com": { accountIndex: 9, pin: "9999" },
-  "owner10@email.com": { accountIndex: 10, pin: "1010" },
-  "owner11@email.com": { accountIndex: 11, pin: "1111" },
-  "owner12@email.com": { accountIndex: 12, pin: "1212" },
-  "owner13@email.com": { accountIndex: 13, pin: "1313" },
-  "owner14@email.com": { accountIndex: 14, pin: "1414" },
-  "owner15@email.com": { accountIndex: 15, pin: "1515" },
-  "owner16@email.com": { accountIndex: 16, pin: "1616" },
-  "owner17@email.com": { accountIndex: 17, pin: "1717" },
-  "owner18@email.com": { accountIndex: 18, pin: "1818" },
-  "owner19@email.com": { accountIndex: 19, pin: "1919" },
 };
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -106,6 +96,13 @@ app.post("/api/login", async (req, res) => {
   try {
     const accountIndex = creds.accountIndex;
     const address = accounts[accountIndex];
+    
+    if (!address) {
+      return res.status(400).json({ 
+        error: `Account unavailable. The blockchain network only has ${accounts.length} accounts.` 
+      });
+    }
+
     const balance = await web3.eth.getBalance(address);
     const label = getAccountLabel(accountIndex);
     const role = getAccountRole(accountIndex);
@@ -301,15 +298,35 @@ app.get("/api/lands", async (req, res) => {
 app.get("/api/blocks", async (req, res) => {
   try {
     const latest = await web3.eth.getBlockNumber();
+    
+    // Fetch all events to decode transaction actions
+    const pastEvents = await contract.getPastEvents('allEvents', { fromBlock: 0, toBlock: 'latest' });
+    const eventsByBlock = {};
+    pastEvents.forEach(e => {
+      if (!eventsByBlock[e.blockNumber]) eventsByBlock[e.blockNumber] = [];
+      if (e.event === 'LandRegistered') {
+        eventsByBlock[e.blockNumber].push(`Registered Land #${e.returnValues.landId}`);
+      } else if (e.event === 'LandTransferred') {
+        eventsByBlock[e.blockNumber].push(`Transferred Land #${e.returnValues.landId}`);
+      }
+    });
+
     const blocks = [];
     // Fetch all blocks from latest down to genesis (block 0)
     for (let i = parseInt(latest.toString()); i >= 0; i--) {
       const block = await web3.eth.getBlock(i);
+      
+      let details = eventsByBlock[i] || [];
+      if (details.length === 0 && block.transactions.length > 0) {
+        details = ["Contract Deployment / Misc"];
+      }
+
       blocks.push({
         number: block.number.toString(),
         hash: block.hash,
         txCount: block.transactions.length,
         timestamp: new Date(parseInt(block.timestamp) * 1000).toLocaleString(),
+        details: details
       });
     }
     res.json({ latestBlock: latest.toString(), blocks });
